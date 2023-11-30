@@ -1,7 +1,4 @@
 export default function Feature({feature}) {
-    if (!feature || !feature.img) {
-        return <div></div>;
-      }
     return(        
         <div className="feature-item">
           <img src={feature.img} 
