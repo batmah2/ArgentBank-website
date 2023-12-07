@@ -1,7 +1,10 @@
-import Accounts from '../components/Accounts'
+import Accounts from '../components/Accounts/Accounts'
 
-export default function Home() {
+export default function User() {
+
     return (
+        <>
             <Accounts/>
+        </>
     )
 }
