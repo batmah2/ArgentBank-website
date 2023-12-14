@@ -101,6 +101,88 @@ paths:
           description: Invalid Fields
         '500':
           description: Internal Server Error
+  /users/{userId}/accounts:
+    security:
+      - Bearer: []
+    get:
+      tags:
+        - Accounts modules
+      summary: User Accounts API
+      description: API for getting an user's accounts
+      parameters:
+        - name: userId
+          in: path
+          description: The user's ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return an array of an user's accounts
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: "#/definitions/UserAccount"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal Server Error
+  /users/{userId}/accounts/{accountId}:
+    get: 
+      security:
+        - Bearer: []
+      tags: 
+        - Accounts modules
+      summary: User Accounts API
+        description: API for getting an user's account
+        parameters:
+          - name: userId
+            in: path
+            description: The user's ID
+            required: true
+            schema:
+              type: string
+          - name: accountId
+            in: path
+            description: The user's ID
+            required: true
+            schema:
+              type: string
+        responses:
+          "200":
+            description: Return an user's account
+            content:
+              application/json:
+                schema:
+                  $ref: "#/definitions/UserAccount"
+          '400':
+            description: Bad request
+          '404':
+            description: Accounts not found
+            content: {}
+          '500':
+            description: Internal Server Error
+  /users/{userId}/accounts/{accountId}/transactions:
+    get:
+  /users/{userId}/accounts/{accountId}/transactions/{transactionId}:
+    put:
+      (...)
+      requestBody:
+        content:
+          appplication/json:
+            schema:
+              type: object
+              properties:
+                category: 
+                  type: string
+                  example: Utilities
+                note:
+                  type: string
+                  example: Invoice EDF
+      (...)
+
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -156,3 +238,37 @@ definitions:
     properties:
       userName:
         type: string
+  UserAccount:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The account's ID
+        example: "1"
+      name:
+        type: string
+        description: The account's name
+        example: Argent Bank Checking
+      number:
+        type: string
+        description: The account's number
+        example: x3448
+      balance: 
+        type: number
+        description: The account's balance
+        example: 48098.43
+  Transaction:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The transaction's id
+        example: "1"
+      date:
+      description:
+      amount:
+      balance:
+      type:
+      category:
+      note:
+

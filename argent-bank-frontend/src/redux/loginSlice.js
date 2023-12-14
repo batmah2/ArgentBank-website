@@ -2,51 +2,63 @@ import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 
-export const loginUser= createAsyncThunk(
-    'user/loginUser',
-    async(userCredentials)=> {
-        const request = await axios.post('http://localhost:3001/api/v1/user/login', userCredentials)
-        const response = await request.data.data;
-        localStorage.setItem('user', JSON.stringify(response));
-        return response;
-    }
-)
+// ACTION
+export const loginUser = createAsyncThunk(
+  "user/loginUser",
+  async ({ email, password, rememberMe }) => {
+    const { data } = await axios.post(
+      "http://localhost:3001/api/v1/user/login",
+      { email, password }
+    );
+    const { token } = data.body;
+    rememberMe && token && localStorage.setItem("token", JSON.stringify(token));
+    return token;
+  }
+);
 
-const userSlice = createSlice ({
-    name: 'user',
-    initialState: {
+// REDUCER
+const loginSlice = createSlice({
+  name: "token",
+  initialState: {
+    isLogged: !!localStorage.getItem("token"),
+    loading: false,
+    token: localStorage.getItem("token") || null,
+    error: null,
+  },
+  reducers: {
+    logout() {
+      localStorage.removeItem("token");
+      return {
         isLogged: false,
         loading: false,
-        user: null,
-        error: null
+        token: null,
+        error: null,
+      };
     },
-    extraReducers:(builder)=> {
-        builder
-        .addCase(loginUser.pending, (state)=> {  
-            state.isLogged= false;          
-            state.loading = true;
-            state.user = null;
-            state.error = null;
-        })
-        .addCase(loginUser.fulfilled,(state, action)=> {
-            state.isLogged= true;
-            state.loading = false;
-            state.user = action.payload;
-            state.error = null;
-        })
-        .addCase(loginUser.rejected, (state, action)=> {
-            state.isLogged= false;
-            state.loading = false;
-            state.user = null;
-            console.log(action.error.message);
-            if(action.error.message === 'erreur 400: La requête à échoué'){
-                state.error = 'L\'email ou le mot de passe sont incorrect';
-            } else {
-                state.error = action.error.message;
-            }
-            state.error = null;
-        })
-    }    
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.isLogged = false;
+        state.loading = true;
+        state.token = null;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLogged = true;
+        state.loading = false;
+        state.token = action.payload;
+        state.error = null;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLogged = false;
+        state.loading = false;
+        state.token = null;
+        state.error = "L'email ou le mot de passe sont incorrects";
+      });
+  },
 });
 
-export default userSlice.reducer
+export const { logout } = loginSlice.actions;
+
+export default loginSlice.reducer;
