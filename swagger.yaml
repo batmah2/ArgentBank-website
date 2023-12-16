@@ -65,11 +65,9 @@ paths:
         - User Module
       summary: User Profile API
       description: API for fetching a user profile
-      #produces:
-       # - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile retrieved successfully
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
@@ -94,7 +92,7 @@ paths:
         - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile retrieved successfully
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
@@ -108,7 +106,7 @@ paths:
       tags:
         - Accounts modules
       summary: User Accounts API
-      description: API for getting an user's accounts
+      description: API for getting a user's accounts
       parameters:
         - name: userId
           in: path
@@ -136,27 +134,27 @@ paths:
       tags: 
         - Accounts modules
       summary: User Accounts API
-        description: API for getting an user's account
-        parameters:
-          - name: userId
-            in: path
-            description: The user's ID
-            required: true
-            schema:
-              type: string
-          - name: accountId
-            in: path
-            description: The user's ID
-            required: true
-            schema:
-              type: string
-        responses:
-          "200":
-            description: Return an user's account
-            content:
-              application/json:
-                schema:
-                  $ref: "#/definitions/UserAccount"
+      description: API for getting an user's account
+      parameters:
+        - name: userId
+          in: path
+          description: The user's ID
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: The user's ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return an user's account
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/UserAccount"
           '400':
             description: Bad request
           '404':
@@ -166,12 +164,41 @@ paths:
             description: Internal Server Error
   /users/{userId}/accounts/{accountId}/transactions:
     get:
+      tags:
+        - Transactions modules
+      summary: User Transactions API
+      description: API for retrieving transactions for a specific account
+      parameters:
+        - name: userId
+          in: path
+          description: The user's ID
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: The account's ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Return an array of user's transactions for an account
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: "#/definitions/Transaction"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal Server Error
   /users/{userId}/accounts/{accountId}/transactions/{transactionId}:
     put:
-      (...)
       requestBody:
         content:
-          appplication/json:
+          application/json:
             schema:
               type: object
               properties:
@@ -181,7 +208,6 @@ paths:
                 note:
                   type: string
                   example: Invoice EDF
-      (...)
 
 securityDefinitions:
   Bearer:
@@ -265,10 +291,4 @@ definitions:
         description: The transaction's id
         example: "1"
       date:
-      description:
-      amount:
-      balance:
-      type:
-      category:
-      note:
-
+        type: string

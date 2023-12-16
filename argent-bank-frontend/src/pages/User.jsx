@@ -35,9 +35,11 @@ export default function User() {
         dispatch(getUserProfile());
     }, [dispatch]);
 
-    useEffect(() => {
-        user.userName && setEditedUsername(user.userName);
-    }, [user])
+   useEffect(() => {
+    if (user && user.userName) {
+        setEditedUsername(user.userName);
+    }
+}, [user]);
 
     return (
         <main className="main bg-dark">
