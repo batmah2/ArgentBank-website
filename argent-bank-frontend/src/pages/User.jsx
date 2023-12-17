@@ -35,11 +35,12 @@ export default function User() {
         dispatch(getUserProfile());
     }, [dispatch]);
 
-   useEffect(() => {
-    if (user && user.userName) {
-        setEditedUsername(user.userName);
-    }
-}, [user]);
+    useEffect(() => {
+        if (user && user.userName) {
+            setEditedUsername(user.userName);
+        }
+    }, [user]);
+
 
     return (
         <main className="main bg-dark">
@@ -55,7 +56,7 @@ export default function User() {
                             <label htmlFor='userName'>User name: </label>               
                             <input 
                                 type="text" 
-                                value={editedUsername} 
+                                value={editedUsername}  
                                 onChange={(e) => setEditedUsername(e.target.value)} 
                             />
                         </div>

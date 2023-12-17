@@ -1,13 +1,11 @@
-swagger: '2.0'
+openapi: 3.0.1
 info:
   title: Bank Argent API documentation
   description: Contains all available API endpoints in this codebase
-  version: '1.0.0'
-  termsOfService: 'http://swagger.io/terms/'
-host: localhost:3001
-basePath: /api/v1
-schemes:
-  - http
+  termsOfService: http://swagger.io/terms/
+  version: 1.1.0.Alpha
+servers:
+  - url: http://localhost:3001/api/v1
 paths:
   /user/login:
     post:
@@ -15,98 +13,109 @@ paths:
         - User Module
       summary: Login
       description: API for Login
-      parameters:
-        - in: body
-          name: body
-          description: Login Payload
-          required: true
-          schema:
-            $ref: '#/definitions/Login'
-      produces:
-        - application/json
+      requestBody:
+        description: Login Payload
+        content:     
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
       responses:
-        '200':
+        "200":
           description: Login Successfully
-          schema:
-            $ref: '#/definitions/LoginResponse'
-        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        "400":
           description: Invalid Fields
-        '500':
+          content: {}
+        "500":
           description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: body
   /user/signup:
     post:
       tags:
         - User Module
       summary: Signup
       description: API for Signup
-      parameters:
-        - in: body
-          name: body
-          description: Signup Payload
-          required: true
-          schema:
-            $ref: '#/definitions/User'
-      produces:
-        - application/json
+      requestBody:
+        description: Signup Payload
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
       responses:
-        '200':
+        "200":
           description: Signup Successfully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "400":
           description: Invalid Fields
-        '500':
+          content: {}
+        "500":
           description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: body
   /user/profile:
-    post:
+    put:
+      tags:
+        - User Module
+      summary: Update User Profile API
+      description: API for updating a user profile
+      requestBody:
+        description: Update user profile attributes
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "400":
+          description: Invalid Fields
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
       security:
         - Bearer: []
+      x-codegen-request-body-name: body
+    post:
       tags:
         - User Module
       summary: User Profile API
       description: API for fetching a user profile
       responses:
-        '200':
+        "200":
           description: User profile retrieved successfully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "400":
           description: Invalid Fields
-        '500':
+          content: {}
+        "500":
           description: Internal Server Error
-    put:
+          content: {}
       security:
         - Bearer: []
-      tags:
-        - User Module
-      summary: User Profile API
-      description: API for updating a user profile
-      parameters:
-        - in: body
-          name: body
-          description: Update user profile attributes
-          required: true
-          schema:
-            $ref: '#/definitions/UserProfile'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: User profile retrieved successfully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
   /users/{userId}/accounts:
-    security:
-      - Bearer: []
     get:
       tags:
-        - Accounts modules
-      summary: User Accounts API
-      description: API for getting a user's accounts
+        - Transactions Module (not implemented)
+      summary: Return a list of accounts
+      description: API for transactions
       parameters:
         - name: userId
           in: path
@@ -116,58 +125,30 @@ paths:
             type: string
       responses:
         "200":
-          description: Return an array of an user's accounts
-          content: 
-            application/json:
-              schema: 
-                type: array
-                items: 
-                  $ref: "#/definitions/UserAccount"
-        '400':
-          description: Bad request
-        '500':
-          description: Internal Server Error
-  /users/{userId}/accounts/{accountId}:
-    get: 
-      security:
-        - Bearer: []
-      tags: 
-        - Accounts modules
-      summary: User Accounts API
-      description: API for getting an user's account
-      parameters:
-        - name: userId
-          in: path
-          description: The user's ID
-          required: true
-          schema:
-            type: string
-        - name: accountId
-          in: path
-          description: The user's ID
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Return an user's account
+          description: Return an array of all accounts for a given user.
           content:
             application/json:
               schema:
-                $ref: "#/definitions/UserAccount"
-          '400':
-            description: Bad request
-          '404':
-            description: Accounts not found
-            content: {}
-          '500':
-            description: Internal Server Error
-  /users/{userId}/accounts/{accountId}/transactions:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserAccount'
+        "400":
+          description: Bad request
+          content: {}
+        "404":
+          description: Accounts not found
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+      security:
+        - Bearer: []
+  /users/{userId}/accounts/{accountId}:
     get:
       tags:
-        - Transactions modules
-      summary: User Transactions API
-      description: API for retrieving transactions for a specific account
+        - Transactions Module (not implemented)
+      summary: Return an account
+      description: API for transactions
       parameters:
         - name: userId
           in: path
@@ -182,113 +163,269 @@ paths:
           schema:
             type: string
       responses:
-        '200':
-          description: Return an array of user's transactions for an account
-          content: 
+        "200":
+          description: User accounts retrieved successfully
+          content:
             application/json:
-              schema: 
+              schema:
+                $ref: '#/components/schemas/UserAccount'
+        "400":
+          description: Bad request
+          content: {}
+        "404":
+          description: Accounts not found
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+      security:
+        - Bearer: []
+  /users/{userId}/accounts/{accountId}/transactions:
+    get:
+      tags:
+        - Transactions Module (not implemented)
+      summary: Return a list of transactions for the last 30 days
+      description: API for transactions
+      parameters:
+        - name: userId
+          in: path
+          description: The user's ID
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: The account's ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return an array of all the transactions for the last 30 days.
+          content:
+            application/json:
+              schema:
                 type: array
                 items: 
-                  $ref: "#/definitions/Transaction"
-        '400':
+                  $ref: '#/components/schemas/TransactionDetails'
+        "400":
           description: Bad request
-        '500':
+          content: {}
+        "404":
+          description: Transactions not found
+          content: {}
+        "500":
           description: Internal Server Error
+          content: {}
+      security:
+        - Bearer: []
   /users/{userId}/accounts/{accountId}/transactions/{transactionId}:
-    put:
+    get:
+      tags:
+        - Transactions Module (not implemented)
+      summary: Update a transaction details.
+      description: API for transactions
+      parameters:
+        - name: userId
+          in: path
+          description: The user's ID
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: The account's ID
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The transaction's ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User transactions changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDetails'
+        "400":
+          description: Bad request
+          content: {}
+        "404":
+          description: Transaction not found
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+      security:
+        - Bearer: []
+    patch:
+      tags:
+        - Transactions Module (not implemented)
+      summary: Update a transaction details.
+      description: API for transactions
+      parameters:
+        - name: userId
+          in: path
+          description: The user's ID
+          required: true
+          schema:
+            type: string
+        - name: accountId
+          in: path
+          description: The account's ID
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The transaction's ID
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                category: 
+                category:
                   type: string
-                  example: Utilities
+                  example: 1
                 note:
                   type: string
-                  example: Invoice EDF
-
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
-definitions:
-  User:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-      firstName:
-        type: string
-        description: user first name
-      lastName:
-        type: string
-        description: user last name
-      userName:
-        type: string
-        description: user public name
-  Login:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-  ApiResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-      message:
-        type: string
-      body:
-        type: object
-        properties:
-          id:
-            type: string
-          email:
-            type: string
-  LoginResponse:
-    type: object
-    properties:
-      token:
-        type: string
-  UserProfile:
-    type: object
-    properties:
-      userName:
-        type: string
-  UserAccount:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The account's ID
-        example: "1"
-      name:
-        type: string
-        description: The account's name
-        example: Argent Bank Checking
-      number:
-        type: string
-        description: The account's number
-        example: x3448
-      balance: 
-        type: number
-        description: The account's balance
-        example: 48098.43
-  Transaction:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The transaction's id
-        example: "1"
-      date:
-        type: string
+                  example: 1
+      responses:
+        "200":
+          description: User transactions changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDetails'
+        "400":
+          description: Bad request
+          content: {}
+        "404":
+          description: Transaction not found
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+      security:
+        - Bearer: []
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          description: user email
+        password:
+          type: string
+          description: user password
+        firstName:
+          type: string
+          description: user first name
+        lastName:
+          type: string
+          description: user last name
+        userName:
+          type: string
+          description: user public name
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          description: user email
+        password:
+          type: string
+          description: user password
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+        body:
+          type: object
+          properties:
+            id:
+              type: string
+            email:
+              type: string
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    UserProfile:
+      type: object
+      properties:
+        userName:
+          type: string
+    UserAccount:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The account's ID
+          example: 1
+        name:
+          type: string
+          description: The account's name
+          example: Argent Bank Checking
+        number:
+          type: string
+          description: The account's number
+          example: x3448
+        balance:
+          type: number
+          description: The account's balance
+          example: 1
+    TransactionDetails:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The transaction's ID
+          example: 1
+        date:
+          type: string
+          description: The transaction's date
+          example: 2020-02-20T00:00:00.0Z
+        description:
+          type: string
+          description: The transaction's description
+          example: Golden Sun Bakery
+        amount:
+          type: number
+          description: The transaction's amount
+          example: 1
+        balance:
+          type: number
+          description: The transaction's balance
+          example: 1
+        type:
+          type: string
+          description: The transaction's type
+          example: Electronic
+        category:
+          type: string
+          description: The transaction's category
+          example: 1
+        note:
+          type: string
+          description: The transaction's note
+          example: 1
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header
+x-original-swagger-version: "2.0"
