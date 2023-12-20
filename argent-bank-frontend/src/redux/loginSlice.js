@@ -11,7 +11,7 @@ export const loginUser = createAsyncThunk(
       { email, password }
     );
     const { token } = data.body;
-    rememberMe && token && localStorage.setItem("token", JSON.stringify(token));
+    rememberMe && token && localStorage.setItem("token", token);
     return token;
   }
 );
