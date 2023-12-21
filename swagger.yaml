@@ -110,7 +110,7 @@ paths:
           content: {}
       security:
         - Bearer: []
-  /users/{userId}/accounts:
+  /accounts:
     get:
       tags:
         - Transactions Module (not implemented)
@@ -143,7 +143,7 @@ paths:
           content: {}
       security:
         - Bearer: []
-  /users/{userId}/accounts/{accountId}:
+  /accounts/{accountId}:
     get:
       tags:
         - Transactions Module (not implemented)
@@ -180,7 +180,7 @@ paths:
           content: {}
       security:
         - Bearer: []
-  /users/{userId}/accounts/{accountId}/transactions:
+  /transactions:
     get:
       tags:
         - Transactions Module (not implemented)
@@ -219,7 +219,7 @@ paths:
           content: {}
       security:
         - Bearer: []
-  /users/{userId}/accounts/{accountId}/transactions/{transactionId}:
+    /transactions/{transactionId}:
     get:
       tags:
         - Transactions Module (not implemented)
@@ -232,15 +232,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: accountId
+        - name: transactionId  # Ajoutez cet élément pour la définition du paramètre transactionId
           in: path
-          description: The account's ID
-          required: true
-          schema:
-            type: string
-        - name: transactionId
-          in: path
-          description: The transaction's ID
+          description: The transaction's ID  # Assurez-vous de définir la description correcte
           required: true
           schema:
             type: string
@@ -274,15 +268,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: accountId
+        - name: transactionId  # Ajoutez cet élément pour la définition du paramètre transactionId
           in: path
-          description: The account's ID
-          required: true
-          schema:
-            type: string
-        - name: transactionId
-          in: path
-          description: The transaction's ID
+          description: The transaction's ID  # Assurez-vous de définir la description correcte
           required: true
           schema:
             type: string
@@ -305,6 +293,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransactionDetails'
+        "400":
+          description: Bad request
+          content: {}
+        "404":
+          description: Transaction not found
+          content: {}
+        "500":
+          description: Internal Server Error
+          content: {}
+      security:
+        - Bearer: []
+    delete:
+      tags:
+        - Transactions Module (not implemented)
+      summary: Deletes a transaction
+      description: delete a transaction
+      operationId: deleteTransaction
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: transaction id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: User transactions deleted successfully
+          content:
+            application/json: {}
         "400":
           description: Bad request
           content: {}
