@@ -219,43 +219,7 @@ paths:
           content: {}
       security:
         - Bearer: []
-    /transactions/{transactionId}:
-    get:
-      tags:
-        - Transactions Module (not implemented)
-      summary: Update a transaction details.
-      description: API for transactions
-      parameters:
-        - name: userId
-          in: path
-          description: The user's ID
-          required: true
-          schema:
-            type: string
-        - name: transactionId  # Ajoutez cet élément pour la définition du paramètre transactionId
-          in: path
-          description: The transaction's ID  # Assurez-vous de définir la description correcte
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: User transactions changed successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionDetails'
-        "400":
-          description: Bad request
-          content: {}
-        "404":
-          description: Transaction not found
-          content: {}
-        "500":
-          description: Internal Server Error
-          content: {}
-      security:
-        - Bearer: []
+  /transactions/{transactionId}:    
     patch:
       tags:
         - Transactions Module (not implemented)
@@ -268,9 +232,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: transactionId  # Ajoutez cet élément pour la définition du paramètre transactionId
+        - name: transactionId  
           in: path
-          description: The transaction's ID  # Assurez-vous de définir la description correcte
+          description: The transaction's ID  
           required: true
           schema:
             type: string
